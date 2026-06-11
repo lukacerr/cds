@@ -1,0 +1,31 @@
+---
+import "@/styles/starwind.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+	bodyClass?: string;
+}
+
+const {
+	title = "Diagnóstico y Propuesta de Mejora · Sanatorio Bernal",
+	description = "Presentación de Calidad de Software sobre el diagnóstico organizacional y propuesta de mejora para Sanatorio Bernal.",
+	bodyClass = "",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<title>{title}</title>
+	</head>
+	<body class={bodyClass}>
+		<slot />
+	</body>
+</html>

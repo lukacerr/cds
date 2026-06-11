@@ -1,0 +1,721 @@
+---
+import {
+	type PresentationIcon,
+	presentationSlides,
+} from "@/data/presentation";
+
+interface Props {
+	initialSlide?: number;
+}
+
+const { initialSlide = 1 } = Astro.props;
+const total = presentationSlides.length;
+const safeInitial = Math.min(Math.max(Number(initialSlide) || 1, 1), total);
+
+const iconPaths: Record<PresentationIcon, string> = {
+	users:
+		"M9 11a4 4 0 1 0 0-8a4 4 0 0 0 0 8z M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2 M16 3.1a4 4 0 0 1 0 7.8 M21 21v-2a4 4 0 0 0-3-3.85",
+	grid: "M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z",
+	leaf: "M5 21c-1-9 4-16 15-16c0 11-7 16-15 16z M5 21c2-7 6-11 11-13",
+	ruler: "M4 8.5l4.5-4.5l11 11l-4.5 4.5z M8 8l2 2 M11 5l2 2 M5 11l2 2 M14 8l2 2",
+	alert: "M12 3l9.5 17H2.5z M12 9.5v5 M12 17.5h.01",
+	target:
+		"M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0-18 0 M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0-10 0 M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0",
+	satellite:
+		"M4 20a12 12 0 0 1 12-12 M4 20a8 8 0 0 1 8-8 M4 20a4 4 0 0 1 4-4 M4.5 19.5h.01 M14 4l6 6 M15.5 8.5l-3 3",
+	vector:
+		"M4 4h4v4H4z M16 4h4v4h-4z M16 16h4v4h-4z M4 16h4v4H4z M8 6h8 M18 8v8 M8 18h8 M6 8v8",
+	window: "M3 5h18v14H3z M3 9h18 M6 7h.01 M8.5 7h.01 M11 7h.01",
+	scissors:
+		"M6 6m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0 M6 18m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0 M8.5 7.5L20 16 M8.5 16.5L20 8",
+	layers: "M12 3l9 5l-9 5l-9-5z M3 12l9 5l9-5 M3 16.5l9 5l9-5",
+	sprout:
+		"M12 21v-9 M12 12c0-3.3-2.2-5.5-6.5-5.5C5.5 9.8 7.7 12 12 12z M12 11c0-3 2-5 6-5c0 3-2 5-6 5z",
+	map: "M9 18l-6 3V6l6-3l6 3l6-3v15l-6 3l-6-3z M9 3v15 M15 6v15",
+	drop: "M12 3.5C8.5 8.5 6.5 11.5 6.5 14.5a5.5 5.5 0 0 0 11 0c0-3-2-6-5.5-11z M9.5 15a2.5 2.5 0 0 0 2.5 2.5",
+	gear:
+		"M10.4 3.3a1 1 0 0 1 3.2 0l.2 1.4a7 7 0 0 1 1.9 1.1l1.3-.5a1 1 0 0 1 1.3 1.8l-.9 1.1a7 7 0 0 1 0 2.2l.9 1.1a1 1 0 0 1-1.3 1.8l-1.3-.5a7 7 0 0 1-1.9 1.1l-.2 1.4a1 1 0 0 1-3.2 0l-.2-1.4a7 7 0 0 1-1.9-1.1l-1.3.5a1 1 0 0 1-1.3-1.8l.9-1.1a7 7 0 0 1 0-2.2l-.9-1.1A1 1 0 0 1 5.6 6.3l1.3.5a7 7 0 0 1 1.9-1.1z M12 12m-2.4 0a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0-4.8 0",
+	chart: "M4 19h16 M7 16v-5 M12 16V8 M17 16v-9 M6 10l4-4l4 3l4-5",
+	check: "M4 12.5l5 5L20 6",
+	building: "M4 21V8l8-5l8 5v13 M9 21v-6h6v6 M8 10h.01 M12 10h.01 M16 10h.01 M8 14h.01 M16 14h.01",
+	shield: "M12 3l7 3v5c0 4.5-3 8-7 10c-4-2-7-5.5-7-10V6z M9.5 12l1.7 1.7L15 9.8",
+	git: "M7 6.5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0 M17 17.5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0 M7 8.5v4a5 5 0 0 0 5 5h3 M7 12.5h10 M17 10.5v4",
+	test: "M9 3h6 M10 3v5l-5 8.5A3 3 0 0 0 7.6 21h8.8a3 3 0 0 0 2.6-4.5L14 8V3 M8 15h8",
+	clock: "M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0-18 0 M12 7v5l3 2",
+	cycle: "M4 12a8 8 0 0 1 13.6-5.7 M18 3v4h-4 M20 12a8 8 0 0 1-13.6 5.7 M6 21v-4h4",
+	ticket: "M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 1 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 1 0 0-4z M9 9v6 M15 9v6",
+};
+
+function icon(name: PresentationIcon) {
+	return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${iconPaths[name]}" /></svg>`;
+}
+---
+
+<div
+	class="deck"
+	data-deck
+	data-initial-slide={safeInitial}
+	data-total-slides={total}
+>
+	<header class="deck-top">
+		<a class="deck-brand" href="/" aria-label="Inicio de la presentación">
+			<span class="deck-brand-mark" set:html={icon("shield")} />
+			<span class="deck-brand-text">Calidad de Software · Sanatorio Bernal</span>
+		</a>
+		<a class="deck-notes-link" href="/notas">Notas del orador</a>
+	</header>
+
+	<div class="stage-wrap">
+		<div class="stage">
+			{
+				presentationSlides.map((slide, i) => {
+					const n = i + 1;
+					return (
+						<article
+							class:list={[
+								"slide",
+								`variant-${slide.variant}`,
+								`tone-${slide.tone}`,
+								{ "is-active": n === safeInitial },
+							]}
+							data-slide={n}
+							aria-hidden={n === safeInitial ? "false" : "true"}
+						>
+							{slide.image && slide.variant === "thanks" && (
+								<img class="slide-bg" src={slide.image.src} alt="" aria-hidden="true" />
+							)}
+							{slide.image && slide.variant === "flow" && (
+								<img class="slide-bg-muted" src={slide.image.src} alt="" aria-hidden="true" />
+							)}
+
+							<div class="slide-inner">
+								{slide.variant !== "cover" && slide.variant !== "thanks" && (
+									<header class="slide-head reveal">
+										<p class="eyebrow">{slide.eyebrow}</p>
+										<h1 class="slide-title">{slide.title}</h1>
+										{slide.lead && <p class="lead">{slide.lead}</p>}
+									</header>
+								)}
+
+								{/* COVER */}
+								{slide.variant === "cover" && (
+									<div class="cover">
+										<p class="eyebrow reveal">{slide.eyebrow}</p>
+										<h1 class="cover-title reveal">{slide.title}</h1>
+										{slide.lead && <p class="cover-lead reveal">{slide.lead}</p>}
+										{slide.team && (
+											<ul class="team reveal">
+												{slide.team.map((member) => (
+													<li class="team-chip">
+														<span class="team-dot" set:html={icon("users")} />
+														{member}
+													</li>
+												))}
+											</ul>
+										)}
+										{slide.image && (
+											<figure class="cover-logo reveal">
+												<img src={slide.image.src} alt={slide.image.alt} />
+											</figure>
+										)}
+									</div>
+								)}
+
+								{/* SPLIT — copy + image */}
+								{slide.variant === "split" && (
+									<div class="split">
+										<div class="split-copy">
+											{slide.cards && (
+												<div class="stack">
+													{slide.cards.map((card) => (
+														<div class="card reveal">
+															<span class="card-icon" set:html={icon(card.icon)} />
+															<div>
+																<h2>{card.title}</h2>
+																<p>{card.description}</p>
+															</div>
+														</div>
+													))}
+												</div>
+											)}
+										</div>
+										{slide.image && (
+											<figure class="panel reveal">
+												<img src={slide.image.src} alt={slide.image.alt} loading="lazy" />
+												{slide.image.caption && <figcaption>{slide.image.caption}</figcaption>}
+											</figure>
+										)}
+									</div>
+								)}
+
+								{/* CARDS — image panel + stacked cards */}
+								{slide.variant === "cards" && slide.cards && (
+									<div class:list={["cards-body", { "no-image": !slide.image }]}>
+										{slide.image && (
+											<figure class="panel cards-panel reveal">
+												<img src={slide.image.src} alt={slide.image.alt} loading="lazy" />
+												{slide.image.caption && <figcaption>{slide.image.caption}</figcaption>}
+											</figure>
+										)}
+										<div class:list={["card-grid", `count-${slide.cards.length}`]}>
+											{slide.cards.map((card) => (
+												<div class="card reveal">
+													{card.tag && <span class="card-tag">{card.tag}</span>}
+													<span class="card-icon" set:html={icon(card.icon)} />
+													<div>
+														<h2>{card.title}</h2>
+														<p>{card.description}</p>
+													</div>
+												</div>
+											))}
+										</div>
+									</div>
+								)}
+
+								{/* FLOW */}
+								{slide.variant === "flow" && slide.flow && (
+									<ol class="flow">
+										{slide.flow.map((step, si) => (
+											<li class="flow-node reveal">
+												<span class="flow-step">{si + 1}</span>
+												<span class="flow-icon" set:html={icon(step.icon)} />
+												<span class="flow-label">{step.label}</span>
+											</li>
+										))}
+									</ol>
+								)}
+
+								{/* FORMULA */}
+								{slide.variant === "formula" && slide.formula && (
+									<div class="formula-wrap">
+										<div class="formula-side">
+											<div class="formula-box reveal">{slide.formula.expr}</div>
+											<ul class="legend reveal">
+												{slide.formula.legend.map((l) => (
+													<li>
+														<b>{l.sym}</b>
+														<span>{l.meaning}</span>
+													</li>
+												))}
+											</ul>
+										</div>
+										{slide.image && (
+											<figure class="panel reveal">
+												<img src={slide.image.src} alt={slide.image.alt} loading="lazy" />
+												{slide.image.caption && <figcaption>{slide.image.caption}</figcaption>}
+											</figure>
+										)}
+									</div>
+								)}
+
+								{/* ENVIRONMENTS */}
+								{slide.variant === "environments" && slide.environments && (
+									<div class="env-grid">
+										{slide.environments.map((env) => (
+											<div class:list={["env", `lvl-${env.level}`]}>
+												<div class="env-bar"><span>{env.code}</span></div>
+												<div class="env-body reveal">
+													<h2>{env.name}</h2>
+													<p>{env.description}</p>
+												</div>
+											</div>
+										))}
+									</div>
+								)}
+
+								{/* THANKS */}
+								{slide.variant === "thanks" && (
+									<div class="thanks">
+										<p class="eyebrow reveal">{slide.eyebrow}</p>
+										<h1 class="cover-title reveal">{slide.title}</h1>
+										{slide.lead && <p class="cover-lead reveal">{slide.lead}</p>}
+										{slide.stat && (
+											<div class="stat reveal">
+												<strong>{slide.stat.value}</strong>
+												<span>{slide.stat.label}</span>
+											</div>
+										)}
+										{slide.links && (
+											<div class="links reveal">
+												{slide.links.map((link) => (
+													<a
+														href={link.href}
+														target={link.external ? "_blank" : undefined}
+														rel={link.external ? "noreferrer" : undefined}
+													>
+														{link.label}
+														<span aria-hidden="true">↗</span>
+													</a>
+												))}
+											</div>
+										)}
+									</div>
+								)}
+							</div>
+
+							<footer class="slide-foot">
+								<span class="foot-num">{String(n).padStart(2, "0")}</span>
+								<span class="foot-sep" />
+								<span class="foot-total">{String(total).padStart(2, "0")}</span>
+							</footer>
+						</article>
+					);
+				})
+			}
+		</div>
+	</div>
+
+	<nav class="deck-nav" aria-label="Controles de presentación">
+		<button type="button" class="nav-btn" data-prev aria-label="Anterior">
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6l6 6" /></svg>
+		</button>
+		<span class="nav-counter"><b data-counter>{safeInitial}</b> / {total}</span>
+		<button type="button" class="nav-btn" data-next aria-label="Siguiente">
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6l-6 6" /></svg>
+		</button>
+	</nav>
+
+	<div class="deck-progress" aria-hidden="true">
+		<span data-progress style={`width:${(safeInitial / total) * 100}%`} />
+	</div>
+</div>
+
+<script is:inline>
+	const deck = document.querySelector("[data-deck]");
+	if (deck) {
+		const slides = Array.from(deck.querySelectorAll("[data-slide]"));
+		const counter = deck.querySelector("[data-counter]");
+		const progress = deck.querySelector("[data-progress]");
+		const prevBtn = deck.querySelector("[data-prev]");
+		const nextBtn = deck.querySelector("[data-next]");
+		const total = Number(deck.dataset.totalSlides) || slides.length;
+		let current = Number(deck.dataset.initialSlide) || 1;
+		let touchX = 0;
+
+		function fromPath() {
+			const m = window.location.pathname.match(/^\/(\d+)\/?$/);
+			if (!m) return current;
+			const n = Number(m[1]);
+			return Number.isFinite(n) ? Math.min(Math.max(n, 1), total) : current;
+		}
+
+		function go(next, opts = {}) {
+			const n = Math.min(Math.max(next, 1), total);
+			deck.dataset.dir = n >= current ? "fwd" : "back";
+			current = n;
+			for (const s of slides) {
+				const active = Number(s.dataset.slide) === current;
+				s.classList.toggle("is-active", active);
+				s.setAttribute("aria-hidden", active ? "false" : "true");
+			}
+			if (counter) counter.textContent = String(current);
+			if (progress) progress.style.width = (current / total) * 100 + "%";
+			prevBtn?.toggleAttribute("disabled", current === 1);
+			nextBtn?.toggleAttribute("disabled", current === total);
+			const path = current === 1 ? "/" : "/" + current;
+			if (!opts.skipHistory && window.location.pathname !== path) {
+				window.history.pushState({ slide: current }, "", path);
+			}
+		}
+
+		prevBtn?.addEventListener("click", () => go(current - 1));
+		nextBtn?.addEventListener("click", () => go(current + 1));
+
+		window.addEventListener("keydown", (e) => {
+			if (["ArrowRight", " ", "PageDown"].includes(e.key)) {
+				e.preventDefault();
+				go(current + 1);
+			} else if (["ArrowLeft", "PageUp"].includes(e.key)) {
+				e.preventDefault();
+				go(current - 1);
+			} else if (e.key === "Home") {
+				go(1);
+			} else if (e.key === "End") {
+				go(total);
+			}
+		});
+
+		window.addEventListener("popstate", () => go(fromPath(), { skipHistory: true }));
+
+		deck.addEventListener("touchstart", (e) => {
+			touchX = e.changedTouches[0]?.clientX || 0;
+		}, { passive: true });
+		deck.addEventListener("touchend", (e) => {
+			const dx = (e.changedTouches[0]?.clientX || 0) - touchX;
+			if (Math.abs(dx) < 50) return;
+			go(dx < 0 ? current + 1 : current - 1);
+		}, { passive: true });
+
+		go(fromPath(), { skipHistory: true });
+	}
+</script>
+
+<style>
+	.deck {
+		--g-50: #f4faf8;
+		--g-100: #dfeeea;
+		--g-200: #bddad3;
+		--g-300: #8fbfb5;
+		--g-400: #559c8e;
+		--g-500: #2f7f73;
+		--g-600: #24695f;
+		--g-700: #1e554f;
+		--g-800: #193f3b;
+		--g-900: #102d2b;
+		--ink: #252b45;
+		--muted: #596176;
+		--line: #d6e3df;
+		--paper: #fbfcfb;
+
+		--accent: var(--g-600);
+		--accent-soft: var(--g-100);
+		--accent-ink: var(--g-800);
+
+		position: fixed;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		background: #f7f9f8;
+		color: var(--ink);
+		font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+		overflow: hidden;
+	}
+
+	/* tones */
+	.tone-green { --accent: var(--g-600); --accent-soft: var(--g-100); --accent-ink: var(--g-800); }
+	.tone-lime { --accent: #6b8f19; --accent-soft: #eef5d7; --accent-ink: #4b6512; }
+	.tone-earth { --accent: #a38318; --accent-soft: #fff1a8; --accent-ink: #654f0a; }
+	.tone-sky { --accent: #1d6f8f; --accent-soft: #dceff4; --accent-ink: #164e64; }
+
+	/* ---- top chrome ---- */
+	.deck-top {
+		position: absolute;
+		top: 0; left: 0; right: 0;
+		z-index: 5;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: clamp(0.7rem, 1.6vh, 1.1rem) clamp(1rem, 3vw, 2rem);
+		pointer-events: none;
+	}
+	.deck-brand, .deck-notes-link { pointer-events: auto; }
+	.deck-brand {
+		display: inline-flex; align-items: center; gap: 0.5rem;
+		text-decoration: none; color: var(--g-700);
+		font-weight: 700; letter-spacing: -0.01em; font-size: 0.95rem;
+	}
+	.deck-brand-mark {
+		display: grid; place-items: center;
+		width: 1.85rem; height: 1.85rem; border-radius: 0.6rem;
+		background: var(--g-600); color: #fff;
+	}
+	.deck-brand-mark :global(svg) { width: 1.1rem; height: 1.1rem; }
+	.deck-notes-link {
+		text-decoration: none;
+		font-size: 0.82rem; font-weight: 600;
+		color: var(--g-700);
+		padding: 0.4rem 0.85rem; border-radius: 999px;
+		border: 1px solid var(--line); background: rgba(255,255,255,0.7);
+		backdrop-filter: blur(6px);
+		transition: background 0.2s, border-color 0.2s;
+	}
+	.deck-notes-link:hover { background: #fff; border-color: var(--g-300); }
+
+	/* ---- stage (16:9, scales to fit) ---- */
+	.stage-wrap { width: 100%; height: 100%; display: grid; place-items: center; }
+	.stage {
+		position: relative;
+		width: min(100vw, calc(100dvh * 16 / 9));
+		height: min(100dvh, calc(100vw * 9 / 16));
+		container-type: size;
+		overflow: hidden;
+	}
+
+	.slide {
+		position: absolute; inset: 0;
+		opacity: 0; visibility: hidden;
+		transform: scale(0.985);
+		transition: opacity 0.45s ease, transform 0.5s ease, visibility 0s linear 0.5s;
+		display: flex;
+	}
+	.slide.is-active {
+		opacity: 1; visibility: visible; transform: none;
+		transition: opacity 0.5s ease, transform 0.6s ease;
+	}
+
+	.slide-inner {
+		position: relative;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		padding: 8.5cqh 7cqw 9cqh;
+		gap: 3cqh;
+	}
+
+	/* reveal animation */
+	.reveal { opacity: 0; transform: translateY(2.4cqh); transition: opacity 0.55s ease, transform 0.55s ease; }
+	.slide.is-active .reveal { opacity: 1; transform: none; }
+	.slide.is-active .slide-head.reveal { transition-delay: 0.05s; }
+	.slide.is-active .card:nth-child(1) { transition-delay: 0.12s; }
+	.slide.is-active .card:nth-child(2) { transition-delay: 0.20s; }
+	.slide.is-active .card:nth-child(3) { transition-delay: 0.28s; }
+	.slide.is-active .card:nth-child(4) { transition-delay: 0.36s; }
+	.slide.is-active .flow-node:nth-child(1) { transition-delay: 0.10s; }
+	.slide.is-active .flow-node:nth-child(2) { transition-delay: 0.18s; }
+	.slide.is-active .flow-node:nth-child(3) { transition-delay: 0.26s; }
+	.slide.is-active .flow-node:nth-child(4) { transition-delay: 0.34s; }
+	.slide.is-active .flow-node:nth-child(5) { transition-delay: 0.42s; }
+	.slide.is-active .env-body.reveal { transition-delay: 0.16s; }
+
+	/* ---- headings ---- */
+	.eyebrow {
+		display: inline-flex; align-items: center;
+		font-size: 1.7cqh; font-weight: 700; letter-spacing: 0.16em;
+		text-transform: uppercase; color: var(--accent);
+		margin: 0;
+	}
+	.slide-head { display: flex; flex-direction: column; gap: 1.4cqh; max-width: 70cqw; }
+	.slide-title {
+		margin: 0; font-weight: 800; letter-spacing: -0.02em;
+		font-size: 5cqh; line-height: 1.05; color: var(--ink);
+	}
+	.lead { margin: 0; font-size: 2.5cqh; line-height: 1.4; color: var(--muted); max-width: 60cqw; }
+
+	/* ---- cards ---- */
+	.card {
+		position: relative;
+		display: flex; gap: 2cqh; align-items: flex-start;
+		background: #fff;
+		border: 1px solid var(--line);
+		border-radius: 2.2cqh;
+		padding: 2.6cqh 2.8cqh;
+		box-shadow: 0 1.4cqh 3cqh -1.8cqh rgba(29, 56, 67, 0.18);
+	}
+	.card-icon {
+		flex: none; display: grid; place-items: center;
+		width: 6cqh; height: 6cqh; border-radius: 1.4cqh;
+		background: var(--accent-soft); color: var(--accent-ink);
+	}
+	.card-icon :global(svg) { width: 3.4cqh; height: 3.4cqh; }
+	.card h2 { margin: 0 0 0.6cqh; font-size: 2.5cqh; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+	.card p { margin: 0; font-size: 2cqh; line-height: 1.38; color: var(--muted); }
+	.card-tag {
+		position: absolute; top: 2.6cqh; right: 2.8cqh;
+		font-size: 1.4cqh; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+		color: var(--accent); background: var(--accent-soft);
+		padding: 0.5cqh 1.2cqh; border-radius: 999px;
+	}
+
+	/* cards = head on top; image panel (left) + stacked cards (right) */
+	.cards-body {
+		flex: 1; min-height: 0;
+		display: grid; grid-template-columns: 0.82fr 1fr; gap: 4cqw;
+		align-items: stretch;
+	}
+	.cards-body.no-image { grid-template-columns: 1fr; }
+	.card-grid { display: grid; gap: 2.4cqh; align-content: center; min-height: 0; }
+	.card-grid.count-2, .card-grid.count-3 { grid-template-columns: 1fr; }
+	.card-grid.count-4 { grid-template-columns: 1fr 1fr; }
+
+	/* ---- split ---- */
+	.split { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 4cqw; align-items: center; min-height: 0; }
+	.split-copy { display: flex; flex-direction: column; gap: 2.4cqh; }
+	.stack { display: flex; flex-direction: column; gap: 2.2cqh; }
+	.panel {
+		margin: 0; border-radius: 2.4cqh; overflow: hidden;
+		background: #fff; border: 1px solid var(--line);
+		box-shadow: 0 3cqh 5cqh -2.6cqh rgba(29, 56, 67, 0.28);
+		max-height: 100%;
+		display: flex; flex-direction: column;
+	}
+	.panel img { width: 100%; height: 100%; max-height: 60cqh; object-fit: cover; display: block; }
+	.panel figcaption {
+		font-size: 1.7cqh; color: var(--muted); padding: 1.6cqh 2cqh;
+		border-top: 1px solid var(--line); background: var(--g-50);
+	}
+	/* cards image panel fills its column height */
+	.cards-panel { max-height: none; height: 100%; }
+	.cards-panel img { max-height: none; height: 100%; flex: 1; min-height: 0; }
+
+	/* ---- flow ---- */
+	.flow {
+		flex: 1; list-style: none; margin: 0; padding: 0;
+		display: flex; align-items: center; justify-content: center; gap: 1.4cqw;
+	}
+	.flow-node {
+		flex: 1; max-width: 18cqw;
+		display: flex; flex-direction: column; align-items: center; gap: 2.4cqh; text-align: center;
+		background: #fff; border: 1px solid var(--line); border-radius: 2.4cqh;
+		padding: 5.5cqh 2cqh 4.5cqh;
+		box-shadow: 0 1.4cqh 3cqh -1.8cqh rgba(29, 56, 67, 0.2);
+		position: relative;
+	}
+	.flow-node:not(:last-child)::after {
+		content: "→"; position: absolute; right: -1.45cqw; top: 50%; transform: translateY(-50%);
+		color: var(--accent); font-size: 3cqh; font-weight: 700;
+	}
+	.flow-step {
+		position: absolute; top: 2.2cqh; left: 2.2cqh;
+		display: grid; place-items: center;
+		width: 4.4cqh; height: 4.4cqh; border-radius: 999px;
+		background: var(--accent-soft); color: var(--accent-ink);
+		font-weight: 800; font-size: 2.1cqh;
+	}
+	.flow-icon {
+		display: grid; place-items: center;
+		width: 10cqh; height: 10cqh; border-radius: 999px;
+		background: var(--accent); color: #fff;
+	}
+	.flow-icon :global(svg) { width: 5.2cqh; height: 5.2cqh; }
+	.flow-label { font-size: 2.2cqh; font-weight: 700; line-height: 1.25; color: var(--ink); }
+
+	/* ---- formula ---- */
+	.formula-wrap { flex: 1; display: grid; grid-template-columns: 1.1fr 1fr; gap: 4cqw; align-items: center; min-height: 0; }
+	.formula-wrap .panel { align-self: center; justify-self: center; width: fit-content; max-width: 100%; max-height: 100%; }
+	.formula-wrap .panel img { width: auto; max-width: 100%; height: 46cqh; max-height: 46cqh; object-fit: contain; }
+	.formula-side { display: flex; flex-direction: column; gap: 3cqh; }
+	.formula-box {
+		font-size: 4.4cqh; font-weight: 800; letter-spacing: -0.01em;
+		color: var(--accent-ink); background: #fff;
+		border: 2px solid var(--accent); border-radius: 2cqh;
+		padding: 4cqh 3cqh; text-align: center;
+		box-shadow: 0 2cqh 4cqh -2.4cqh rgba(29, 56, 67, 0.28);
+	}
+	.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.4cqh; }
+	.legend li { display: flex; align-items: baseline; gap: 1.4cqh; font-size: 2.1cqh; color: var(--muted); }
+	.legend b {
+		flex: none; min-width: 5cqh; text-align: center;
+		color: var(--accent-ink); background: var(--accent-soft);
+		border-radius: 0.8cqh; padding: 0.4cqh 1cqh; font-size: 2cqh;
+	}
+
+	/* ---- environments ---- */
+	.env-grid { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4cqw; align-content: center; }
+	.env { display: flex; flex-direction: column; border-radius: 2cqh; overflow: hidden; background: #fff; border: 1px solid var(--line); box-shadow: 0 1.6cqh 3cqh -2cqh rgba(29,56,67,0.22); }
+	.env-bar { height: 16cqh; display: grid; place-items: center; color: #fff; }
+	.env-bar span { font-size: 5cqh; font-weight: 800; letter-spacing: 0.02em; }
+	.env.lvl-1 .env-bar { background: linear-gradient(160deg, #c98f3c, #a9702a); }
+	.env.lvl-2 .env-bar { background: linear-gradient(160deg, #c2b13e, #9a9326); }
+	.env.lvl-3 .env-bar { background: linear-gradient(160deg, #8fb84a, #6a9a2e); }
+	.env.lvl-4 .env-bar { background: linear-gradient(160deg, #4f9c33, #2f6d1f); }
+	.env-body { padding: 2.4cqh 2cqh; }
+	.env-body h2 { margin: 0 0 0.8cqh; font-size: 2.3cqh; font-weight: 700; color: var(--ink); }
+	.env-body p { margin: 0; font-size: 1.85cqh; line-height: 1.34; color: var(--muted); }
+
+	/* ---- cover & thanks ---- */
+	.slide-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+	.slide-bg-muted {
+		position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;
+		opacity: 0.32;
+	}
+	/* flow keeps a subtle full-bleed photo; content sits above image + scrim */
+	.variant-flow .slide-inner { z-index: 1; }
+	.variant-flow::after {
+		content: ""; position: absolute; inset: 0; z-index: 0;
+		background: linear-gradient(180deg, rgba(251, 252, 251, 0.93) 0%, rgba(251, 252, 251, 0.82) 45%, rgba(251, 252, 251, 0.58) 100%);
+	}
+	.variant-cover { color: var(--ink); background: linear-gradient(90deg, #fff 0%, #fff 65%, #e1eeeb 65%, #e1eeeb 100%); }
+	.variant-thanks { color: #f4f8ec; }
+	.variant-cover .slide-inner, .variant-thanks .slide-inner { z-index: 1; justify-content: center; }
+	.variant-thanks::after {
+		content: ""; position: absolute; inset: 0; z-index: 0;
+		background: linear-gradient(105deg, rgba(16, 45, 43, 0.96) 0%, rgba(30, 85, 79, 0.82) 46%, rgba(36, 105, 95, 0.48) 100%);
+	}
+	.cover, .thanks { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 2.6cqh; max-width: 78cqw; }
+	.cover { max-width: 50cqw; }
+	.variant-cover .eyebrow { color: #6b8f19; }
+	.variant-thanks .eyebrow { color: var(--g-200); }
+	.cover-title { margin: 0; font-weight: 500; letter-spacing: -0.025em; font-size: 5.6cqh; line-height: 1.13; color: var(--ink); max-width: 50cqw; }
+	.variant-thanks .cover-title { color: #fff; font-weight: 800; }
+	.cover-lead { margin: 0; font-size: 2.25cqh; line-height: 1.45; color: var(--muted); max-width: 47cqw; }
+	.variant-thanks .cover-lead { color: #e3f0eb; }
+	.cover-logo {
+		position: absolute;
+		right: -45cqw;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 27cqw;
+		margin: 0;
+		display: grid;
+		place-items: center;
+	}
+	.cover-logo.reveal { transform: translateY(calc(-50% + 2.4cqh)); }
+	.slide.is-active .cover-logo.reveal { transform: translateY(-50%); }
+	.cover-logo img { width: 100%; height: auto; display: block; filter: saturate(0.9); }
+	.team { list-style: none; margin: 1cqh 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 1.4cqh; max-width: 74cqw; }
+	.team-chip {
+		display: inline-flex; align-items: center; gap: 1cqh;
+		font-size: 1.95cqh; font-weight: 600; color: var(--ink);
+		background: #fff; border: 1px solid var(--line);
+		padding: 1cqh 1.8cqh; border-radius: 999px;
+	}
+	.team-dot { display: grid; place-items: center; width: 2.8cqh; height: 2.8cqh; color: var(--g-600); }
+	.team-dot :global(svg) { width: 2.4cqh; height: 2.4cqh; }
+
+	.thanks { align-items: flex-start; }
+	.stat { display: flex; flex-direction: column; gap: 0.6cqh; margin-top: 1cqh; }
+	.stat strong { font-size: 3.4cqh; font-weight: 800; color: var(--g-200); }
+	.stat span { font-size: 2.2cqh; color: #dde9c8; }
+	.links { display: flex; flex-wrap: wrap; gap: 1.6cqh; margin-top: 1.4cqh; }
+	.links a {
+		display: inline-flex; align-items: center; gap: 0.8cqh;
+		font-size: 2.1cqh; font-weight: 700; text-decoration: none;
+		color: #1c2e10; background: var(--g-200);
+		padding: 1.4cqh 2.6cqh; border-radius: 999px;
+		transition: transform 0.2s, background 0.2s;
+	}
+	.links a:hover { background: #fff; transform: translateY(-2px); }
+
+	/* ---- slide footer ---- */
+	.slide-foot {
+		position: absolute; left: 7cqw; bottom: 3.6cqh; z-index: 2;
+		display: flex; align-items: center; gap: 1.4cqh;
+		font-size: 1.8cqh; font-weight: 700; color: var(--muted);
+	}
+	.variant-thanks .slide-foot { color: rgba(244, 248, 236, 0.75); }
+	.foot-num { color: var(--accent); }
+	.variant-thanks .foot-num { color: var(--g-200); }
+	.foot-sep { width: 5cqw; height: 2px; background: currentColor; opacity: 0.4; }
+
+	/* ---- bottom nav ---- */
+	.deck-nav {
+		position: absolute; bottom: clamp(0.8rem, 2.2vh, 1.4rem); left: 50%; transform: translateX(-50%);
+		z-index: 6; display: inline-flex; align-items: center; gap: 0.4rem;
+		background: rgba(255, 255, 255, 0.86); backdrop-filter: blur(8px);
+		border: 1px solid var(--line); border-radius: 999px;
+		padding: 0.35rem 0.5rem; box-shadow: 0 0.6rem 1.4rem -0.8rem rgba(29, 56, 67, 0.35);
+	}
+	.nav-btn {
+		display: grid; place-items: center; width: 2.5rem; height: 2.5rem;
+		border: none; border-radius: 999px; background: var(--g-600); color: #fff;
+		transition: background 0.2s, opacity 0.2s;
+	}
+	.nav-btn svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+	.nav-btn:hover { background: var(--g-700); }
+	.nav-btn[disabled] { opacity: 0.4; pointer-events: none; }
+	.nav-counter { font-size: 0.9rem; font-weight: 600; color: var(--muted); padding: 0 0.7rem; min-width: 3.4rem; text-align: center; }
+	.nav-counter b { color: var(--g-700); font-weight: 800; }
+
+	/* ---- progress ---- */
+	.deck-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(36, 105, 95, 0.12); z-index: 6; }
+	.deck-progress span { display: block; height: 100%; background: linear-gradient(90deg, #6b8f19, var(--g-600)); transition: width 0.4s ease; }
+
+	@media (prefers-reduced-motion: reduce) {
+		.slide, .slide.is-active, .reveal, .deck-progress span { transition: none !important; }
+		.reveal { opacity: 1 !important; transform: none !important; }
+	}
+
+	@media (max-width: 640px) {
+		.variant-cover { background: #fff; }
+		.cover { max-width: 86cqw; }
+		.cover-logo, .cover-logo.reveal, .slide.is-active .cover-logo.reveal { position: static; transform: none; width: 56cqw; margin-top: 2cqh; }
+		.split, .formula-wrap, .cards-body { grid-template-columns: 1fr; gap: 2.4cqh; }
+		.card-grid.count-3, .card-grid.count-4, .env-grid { grid-template-columns: 1fr 1fr; }
+		.cards-panel { height: auto; }
+		.cards-panel img { max-height: 30cqh; }
+		.flow { flex-direction: column; }
+		.flow-node { max-width: none; width: 100%; flex-direction: row; justify-content: flex-start; gap: 2.4cqw; }
+		.flow-node:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -1.4cqh; transform: translateX(-50%); }
+		.deck-notes-link { display: none; }
+	}
+</style>
