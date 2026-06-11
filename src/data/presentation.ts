@@ -96,11 +96,10 @@ export interface Slide {
 	note: SpeakerNote;
 }
 
-/** Presenters — persona N in the notes maps to `integrantes[N - 1]`. */
 export const integrantes: string[] = [
-	"Integrante #1",
-	"Integrante #2",
-	"Integrante #3",
+	"Ezequiel Banchio",
+	"Francisco Gonzalez",
+	"Luka Cerrutti",
 ];
 
 export const presentationSlides: Slide[] = [
@@ -141,17 +140,20 @@ export const presentationSlides: Slide[] = [
 		cards: [
 			{
 				title: "Escala sanitaria",
-				description: "~130 camas, 800-1000 consultas ambulatorias diarias y guardia 24 horas.",
+				description:
+					"~130 camas, 800-1000 consultas ambulatorias diarias y guardia 24 horas.",
 				icon: "building",
 			},
 			{
 				title: "Equipo IT pequeño",
-				description: "5 personas: jefe de sistemas, 2 técnicos de infraestructura y 2 analistas funcionales.",
+				description:
+					"5 personas: jefe de sistemas, 2 técnicos de infraestructura y 2 analistas funcionales.",
 				icon: "users",
 			},
 			{
 				title: "Ecosistema híbrido",
-				description: "Herramientas in-house conviven con HCE, turnos y portal del paciente tercerizados.",
+				description:
+					"Herramientas in-house conviven con HCE, turnos y portal del paciente tercerizados.",
 				icon: "layers",
 			},
 		],
@@ -176,22 +178,26 @@ export const presentationSlides: Slide[] = [
 		cards: [
 			{
 				title: "Gestión informal",
-				description: "Trello con checklists, pedidos verbales y sin métricas de flujo ni criterios de aceptación.",
+				description:
+					"Trello con checklists, pedidos verbales y sin métricas de flujo ni criterios de aceptación.",
 				icon: "ticket",
 			},
 			{
 				title: "Código en main",
-				description: "GitHub funciona como repositorio simple, sin branching ni revisiones cruzadas.",
+				description:
+					"GitHub funciona como repositorio simple, sin branching ni revisiones cruzadas.",
 				icon: "git",
 			},
 			{
 				title: "Despliegue manual",
-				description: "El pase a producción depende del jefe de sistemas y de configuraciones WAMPP locales.",
+				description:
+					"El pase a producción depende del jefe de sistemas y de configuraciones WAMPP locales.",
 				icon: "gear",
 			},
 			{
 				title: "Terceros reactivos",
-				description: "Las caídas o bugs del proveedor se gestionan recién cuando impactan en la operación.",
+				description:
+					"Las caídas o bugs del proveedor se gestionan recién cuando impactan en la operación.",
 				icon: "alert",
 			},
 		],
@@ -216,23 +222,27 @@ export const presentationSlides: Slide[] = [
 		cards: [
 			{
 				title: "Seguridad de datos",
-				description: "Resultados de laboratorio visibles en perfiles incorrectos y pérdida de registros digitales.",
+				description:
+					"Resultados de laboratorio visibles en perfiles incorrectos y pérdida de registros digitales.",
 				icon: "shield",
 				tag: "Crítico",
 			},
 			{
 				title: "Disponibilidad",
-				description: "Portal con pantallas en blanco, timeouts y fallas en recuperación de contraseña.",
+				description:
+					"Portal con pantallas en blanco, timeouts y fallas en recuperación de contraseña.",
 				icon: "window",
 			},
 			{
 				title: "Interoperabilidad",
-				description: "Órdenes quirúrgicas perdidas, turnos mal asignados y errores de facturación.",
+				description:
+					"Órdenes quirúrgicas perdidas, turnos mal asignados y errores de facturación.",
 				icon: "vector",
 			},
 			{
 				title: "UX operativa",
-				description: "WhatsApp en bucle, triage desincronizado y problemas de compatibilidad.",
+				description:
+					"WhatsApp en bucle, triage desincronizado y problemas de compatibilidad.",
 				icon: "users",
 			},
 		],
@@ -257,17 +267,20 @@ export const presentationSlides: Slide[] = [
 		image: {
 			src: "/img/calidad/iceberg.png",
 			alt: "Ilustración de un iceberg que representa síntomas y causas ocultas.",
-			caption: "Lo visible son incidentes; lo profundo es el proceso que los genera.",
+			caption:
+				"Lo visible son incidentes; lo profundo es el proceso que los genera.",
 		},
 		cards: [
 			{
 				title: "Lo que se ve",
-				description: "Quejas, caídas del portal, cruces de datos y turnos inconsistentes.",
+				description:
+					"Quejas, caídas del portal, cruces de datos y turnos inconsistentes.",
 				icon: "alert",
 			},
 			{
 				title: "La raíz",
-				description: "Testing tardío, despliegues manuales, sin staging, sin rollback y deuda técnica acumulada.",
+				description:
+					"Testing tardío, despliegues manuales, sin staging, sin rollback y deuda técnica acumulada.",
 				icon: "target",
 			},
 		],
@@ -320,24 +333,28 @@ export const presentationSlides: Slide[] = [
 		cards: [
 			{
 				title: "5S Digitales",
-				description: "Clasificar, ordenar, limpiar, estandarizar y sostener la disciplina sobre tickets y pedidos.",
+				description:
+					"Clasificar, ordenar, limpiar, estandarizar y sostener la disciplina sobre tickets y pedidos.",
 				icon: "grid",
 				tag: "Frente 1",
 			},
 			{
 				title: "Menos interrupciones",
-				description: "Reducir llamados informales y cambios de contexto que rompen el flujo de los analistas.",
+				description:
+					"Reducir llamados informales y cambios de contexto que rompen el flujo de los analistas.",
 				icon: "clock",
 			},
 			{
 				title: "Planificación temprana",
-				description: "No codificar inmediatamente: entender el problema y definir criterios antes de implementar.",
+				description:
+					"No codificar inmediatamente: entender el problema y definir criterios antes de implementar.",
 				icon: "target",
 				tag: "Frente 2",
 			},
 			{
 				title: "Entregas cortas",
-				description: "Validar incrementos funcionales con usuarios reales para evitar testing tardío.",
+				description:
+					"Validar incrementos funcionales con usuarios reales para evitar testing tardío.",
 				icon: "cycle",
 			},
 		],
@@ -387,22 +404,26 @@ export const presentationSlides: Slide[] = [
 		cards: [
 			{
 				title: "CI/CD simplificado",
-				description: "Automatizar empaquetado y despliegue a staging para reducir copia manual y error humano.",
+				description:
+					"Automatizar empaquetado y despliegue a staging para reducir copia manual y error humano.",
 				icon: "gear",
 			},
 			{
 				title: "Testing estratégico",
-				description: "Automatizar solo flujos críticos: login, turnos, órdenes, estudios y datos sensibles.",
+				description:
+					"Automatizar solo flujos críticos: login, turnos, órdenes, estudios y datos sensibles.",
 				icon: "test",
 			},
 			{
 				title: "Trazabilidad",
-				description: "Cada cambio debe vincularse a un ticket para saber qué se cambió, por qué y cómo revertirlo.",
+				description:
+					"Cada cambio debe vincularse a un ticket para saber qué se cambió, por qué y cómo revertirlo.",
 				icon: "ticket",
 			},
 			{
 				title: "Configuration Management",
-				description: "Documentar versiones, puertos, librerías y datos de entorno para evitar 'en mi máquina funciona'.",
+				description:
+					"Documentar versiones, puertos, librerías y datos de entorno para evitar 'en mi máquina funciona'.",
 				icon: "layers",
 			},
 		],
@@ -432,12 +453,14 @@ export const presentationSlides: Slide[] = [
 		cards: [
 			{
 				title: "Visualizar el trabajo",
-				description: "Separar lo pendiente, en curso, en validación y terminado para transparentar bloqueos.",
+				description:
+					"Separar lo pendiente, en curso, en validación y terminado para transparentar bloqueos.",
 				icon: "grid",
 			},
 			{
 				title: "Limitar WIP",
-				description: "Evitar que los analistas atiendan demasiadas tareas a la vez y acumulen trabajo sin terminar.",
+				description:
+					"Evitar que los analistas atiendan demasiadas tareas a la vez y acumulen trabajo sin terminar.",
 				icon: "clock",
 			},
 		],
@@ -462,22 +485,26 @@ export const presentationSlides: Slide[] = [
 		cards: [
 			{
 				title: "ISO 9001",
-				description: "Enfoque basado en procesos para ordenar demanda, soporte y priorización.",
+				description:
+					"Enfoque basado en procesos para ordenar demanda, soporte y priorización.",
 				icon: "layers",
 			},
 			{
 				title: "ISO/IEC 25010",
-				description: "Foco en funcionalidad, fiabilidad y seguridad por la criticidad de los datos médicos.",
+				description:
+					"Foco en funcionalidad, fiabilidad y seguridad por la criticidad de los datos médicos.",
 				icon: "shield",
 			},
 			{
 				title: "Everett Rogers",
-				description: "Empezar con innovadores y adoptadores tempranos para demostrar valor antes de escalar.",
+				description:
+					"Empezar con innovadores y adoptadores tempranos para demostrar valor antes de escalar.",
 				icon: "users",
 			},
 			{
 				title: "Curva de compromiso",
-				description: "Acompañar la resistencia inicial hasta exploración, aceptación y adopción sostenida.",
+				description:
+					"Acompañar la resistencia inicial hasta exploración, aceptación y adopción sostenida.",
 				icon: "cycle",
 			},
 		],
@@ -502,7 +529,8 @@ export const presentationSlides: Slide[] = [
 		cards: [
 			{
 				title: "KR 1 — Defectos críticos",
-				description: "Reducir defectos críticos en producción de 5 por mes a 0.",
+				description:
+					"Reducir defectos críticos en producción de 5 por mes a 0.",
 				icon: "alert",
 				tag: "Calidad",
 			},
@@ -514,7 +542,8 @@ export const presentationSlides: Slide[] = [
 			},
 			{
 				title: "KR 3 — SLA soporte",
-				description: "Subir el cumplimiento del SLA de soporte del 40% al 85% al finalizar el trimestre.",
+				description:
+					"Subir el cumplimiento del SLA de soporte del 40% al 85% al finalizar el trimestre.",
 				icon: "chart",
 				tag: "Servicio",
 			},
